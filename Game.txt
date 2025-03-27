@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Quiz Game</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        .quiz-container { max-width: 400px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px; }
+        .btn { display: block; width: 100%; padding: 10px; margin: 5px 0; border: none; cursor: pointer; }
+        .btn:hover { background-color: #ddd; }
+        .correct { background-color: lightgreen; }
+        .wrong { background-color: lightcoral; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h2 id="question"></h2>
+        <button class="btn" onclick="checkAnswer(0)"></button>
+        <button class="btn" onclick="checkAnswer(1)"></button>
+        <button class="btn" onclick="checkAnswer(2)"></button>
+        <button class="btn" onclick="checkAnswer(3)"></button>
+        <p id="result"></p>
+        <p id="score">Score: 0</p>
+        <button id="restart" class="hidden" onclick="restartQuiz()">Restart Quiz</button>
+    </div>
+
+    <script>
+        const quizData = [
+            { question: "What is the capital of France?", answers: ["Berlin", "Madrid", "Paris", "Rome"], correct: 2 },
+            { question: "Which planet is known as the Red Planet?", answers: ["Earth", "Mars", "Jupiter", "Venus"], correct: 1 },
+            { question: "What is 5 + 3?", answers: ["5", "8", "10", "15"], correct: 1 }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function loadQuestion() {
+            const questionData = quizData[currentQuestion];
+            document.getElementById("question").textContent = questionData.question;
+            document.querySelectorAll(".btn").forEach((btn, index) => {
+                btn.textContent = questionData.answers[index];
+                btn.classList.remove("correct", "wrong");
+                btn.disabled = false;
+            });
+            document.getElementById("result").textContent = "";
+        }
+
+        function checkAnswer(index) {
+            const buttons = document.querySelectorAll(".btn");
+            if (index === quizData[currentQuestion].correct) {
+                buttons[index].classList.add("correct");
+                document.getElementById("result").textContent = "Correct! 🎉";
+                score++;
+                document.getElementById("score").textContent = "Score: " + score;
+                setTimeout(nextQuestion, 1000);
+            } else {
+                buttons[index].classList.add("wrong");
+                document.getElementById("result").textContent = "Wrong! Try again.";
+            }
+            buttons.forEach(btn => btn.disabled = true);
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < quizData.length) {
+                loadQuestion();
+            } else {
+                document.querySelector(".quiz-container").innerHTML = 
+                    `<h2>Quiz Completed! 🎉</h2>
+                    <p>Your final score: ${score} / ${quizData.length}</p>
+                    <button onclick="restartQuiz()">Restart Quiz</button>`;
+            }
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            document.querySelector(".quiz-container").innerHTML = `
+                <h2 id="question"></h2>
+                <button class="btn" onclick="checkAnswer(0)"></button>
+                <button class="btn" onclick="checkAnswer(1)"></button>
+                <button class="btn" onclick="checkAnswer(2)"></button>
+                <button class="btn" onclick="checkAnswer(3)"></button>
+                <p id="result"></p>
+                <p id="score">Score: 0</p>
+                <button id="restart" class="hidden" onclick="restartQuiz()">Restart Quiz</button>
+            `;
+            loadQuestion();
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>
