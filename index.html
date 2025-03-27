@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ku">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بازی پەسەند</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        .quiz-container { max-width: 400px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px; }
+        .btn { display: block; width: 100%; padding: 10px; margin: 5px 0; border: none; cursor: pointer; }
+        .btn:hover { background-color: #ddd; }
+        .correct { background-color: lightgreen; }
+        .wrong { background-color: lightcoral; }
+        .hidden { display: none; }
+        #welcome-page img { max-width: 100%; height: auto; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <!-- Welcome Page -->
+    <div id="welcome-page">
+        <h2>بەخێر هاتی بە بازەکانی پەسەند!</h2>
+        <p>تکایە ناوت بنووسە بۆ دەستپێکردنی پەسەند:</p>
+        <form id="welcome-form">
+            <input type="text" id="user-name" placeholder="ناوی تۆ" required><br><br>
+            <button type="submit" class="btn">دەستپێکردنی پەسەند</button>
+        </form>
+        
+        <!-- Image under Welcome -->
+        <img src="https://via.placeholder.com/400x200" alt="وێنەی بەخێر هاتن" />  <!-- Replace this link with your own image -->
+    </div>
+
+    <!-- Quiz Container (Initially Hidden) -->
+    <div id="quiz-container" class="quiz-container hidden">
+        <h2 id="question"></h2>
+        <button class="btn" onclick="checkAnswer(0)"></button>
+        <button class="btn" onclick="checkAnswer(1)"></button>
+        <button class="btn" onclick="checkAnswer(2)"></button>
+        <button class="btn" onclick="checkAnswer(3)"></button>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        const quizData = [
+            { question: "ئەوە چیە ناوی پایتەختی فەڕەنسە؟", answers: ["بەرلین", "مەدرید", "پارێس", "ڕۆم"], correct: 2 },
+            { question: "کەیە پەیەچیە بە ناوی پلانی تۆمەتە؟", answers: ["زەوی", "مارد", "جوپیتر", "ڤەنۆس"], correct: 1 },
+            { question: "چەندە ٥ + ٣؟", answers: ["٥", "٨", "١٠", "١٥"], correct: 1 }
+        ];
+
+        let currentQuestion = 0;
+
+        // Handle form submission (Welcome Page)
+        document.getElementById("welcome-form").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const userName = document.getElementById("user-name").value;
+            // Store user info (optional, you could display it later in the quiz)
+            alert("بەخێر هاتن " + userName + "!");
+
+            // Hide Welcome Page and Show Quiz
+            document.getElementById("welcome-page").classList.add("hidden");
+            document.getElementById("quiz-container").classList.remove("hidden");
+
+            loadQuestion(); // Load the first question
+        });
+
+        // Load Question Function
+        function loadQuestion() {
+            const questionData = quizData[currentQuestion];
+            document.getElementById("question").textContent = questionData.question;
+            document.querySelectorAll(".btn").forEach((btn, index) => {
+                btn.textContent = questionData.answers[index];  // Display all 4 answers
+                btn.classList.remove("correct", "wrong");
+            });
+            document.getElementById("result").textContent = "";
+        }
+
+        // Check Answer Function
+        function checkAnswer(index) {
+            const questionData = quizData[currentQuestion];
+            const buttons = document.querySelectorAll(".btn");
+
+            if (index === questionData.correct) {
+                buttons[index].classList.add("correct");
+                document.getElementById("result").textContent = "دروستە! 🎉";
+                setTimeout(nextQuestion, 1000);
+            } else {
+                buttons[index].classList.add("wrong");
+                document.getElementById("result").textContent = "هەڵەیە! تکایە دووبارە هەوڵ بده.";
+            }
+        }
+
+        // Load Next Question Function
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < quizData.length) {
+                loadQuestion();
+            } else {
+                document.querySelector("#quiz-container").innerHTML = "<h2>پەسەند تەواو بوو! 🎉</h2>";
+            }
+        }
+    </script>
+
+</body>
+</html>
